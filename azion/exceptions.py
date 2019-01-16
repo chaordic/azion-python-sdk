@@ -2,7 +2,7 @@
 Azion API requests/responses.
 
 Documentation of possible errors to be returned from the API can
-be found here: https://www.azion.com.br/developers/api-v1/#status-codes
+be found here: https://www.azion.com.br/developers/api-v2/#status-codes
 """
 
 
@@ -110,6 +110,15 @@ class TooManyRequests(AzionError):
     pass
 
 
+class InternalServerError(AzionError):
+    """Indicate that the server encountered an unexpected condition
+    that prevented it from fulfilling the request.
+
+    More info here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+    """
+    pass
+
+
 error_handlers = {
     400: BadRequest,
     401: Unauthorized,
@@ -118,7 +127,8 @@ error_handlers = {
     405: MethodNotAllowed,
     406: NotAcceptable,
     409: Conflict,
-    429: TooManyRequests
+    429: TooManyRequests,
+    500: InternalServerError
 }
 
 
