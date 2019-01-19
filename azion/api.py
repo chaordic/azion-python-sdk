@@ -257,6 +257,96 @@ class Azion():
         json = decode_json(response, 200)
         return instance_from_data(CacheSettings, json)
 
+    def list_rules_engine(self, configuration_id, phase):
+        """List rules from a phase of rules engine of the configuration."""
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'rules_engine',
+                                     phase,
+                                     'rules')
+
+        response = self.session.get(url)
+        json = decode_json(response, 200)
+        return many_of(Rule, json)
+
+    def get_rules_engine(self, configuration_id, phase, rule_id):
+        """Get rule from a phase of rules engine of the configuration."""
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'rules_engine',
+                                     phase,
+                                     'rules',
+                                     rule_id)
+
+        response = self.session.get(url)
+        json = decode_json(response, 200)
+        return many_of(Rule, json)
+
+    def delete_rules_engine(self, configuration_id, phase, rule_id):
+        """Delete a rule from rules engine of the configuration."""
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'rules_engine',
+                                     phase,
+                                     'rules',
+                                     rule_id)
+
+        response = self.session.delete(url)
+        return as_boolean(response, 204)
+
+    def create_rules_engine(self, configuration_id,
+                            name, phase, criteria,
+                            behaviors, order=None):
+
+        data = {
+            'name': name,
+            'phase': phase,
+            'criteria': criteria,
+            'behaviors': behaviors,
+            'order': order
+        }
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'rules_engine',
+                                     phase,
+                                     'rules')
+
+        response = self.session.post(url, json=filter_none(data))
+        json = decode_json(response, 201)
+        return instance_from_data(Configuration, json)
+
+    def update_rules_engine(self, configuration_id, phase,
+                            rule_id, name, criteria=None,
+                            behaviors=None, order=None):
+
+        data = {
+            'name': name,
+            'phase': phase,
+            'criteria': criteria,
+            'behaviors': behaviors,
+            'order': order
+        }
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'rules_engine',
+                                     phase,
+                                     'rule',
+                                     rule_id)
+
+        response = self.session.patch(url, json=filter_none(data))
+        json = decode_json(response, 200)
+        return instance_from_data(CacheSettings, json)
+
 
 class Session(requests.Session):
     auth = None

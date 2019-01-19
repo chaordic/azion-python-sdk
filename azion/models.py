@@ -156,6 +156,27 @@ class CacheSettings(object):
             self.enable_caching_for_post = None
 
 
+class Rule(object):
+    """Model representing the rule from rules engine
+    configuration retrieved from the API.
+    """
+
+    def __init__(self, data):
+        self.load_data(data)
+
+    def __repr__(self):
+        return '<Rule [{} ({})]>'.format(self.name,
+                                         self.id)
+
+    def load_data(self, data):
+        self.id = data['id']
+        self.name = data['name']
+        self.phase = data['phase']
+        self.criteria = data['criteria']
+        self.behaviors = data['behaviors']
+        self.order = data['order']
+
+
 class Address(object):
     """Model representing an Address - a related resource
     of `Origin` model.
