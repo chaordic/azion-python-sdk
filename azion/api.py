@@ -1,8 +1,8 @@
 import requests
 from azion.__version__ import __version__ as version
 from azion.models import (
-    Configuration, ErrorResponses, Origin, Token, as_boolean,
-    decode_json, filter_none, instance_from_data, many_of)
+    Configuration, ErrorResponses, CacheSettings, Rule, Token,
+    as_boolean, decode_json, filter_none, instance_from_data, many_of)
 
 
 class Azion():
@@ -110,8 +110,152 @@ class Azion():
 
         response = self.session.get(url)
         json = decode_json(response, 200)
+        json.update({'id': configuration_id})
         return many_of(ErrorResponses, json)
 
+    def update_error_responses(self, configuration_id, cache_error_400=None,
+                               cache_error_403=None, cache_error_404=None,
+                               cache_error_405=None, cache_error_414=None,
+                               cache_error_416=None, cache_error_501=None):
+        """Update error responses of the configuration."""
+
+        data = {
+            'cache_error_400': cache_error_400,
+            'cache_error_403': cache_error_403,
+            'cache_error_404': cache_error_404,
+            'cache_error_405': cache_error_405,
+            'cache_error_414': cache_error_414,
+            'cache_error_416': cache_error_416,
+            'cache_error_501': cache_error_501,
+        }
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'error_responses')
+        response = self.session.patch(url, json=filter_none(data))
+
+        response = self.session.get(url)
+        json = decode_json(response, 200)
+        json.update({'id': configuration_id})
+        return many_of(ErrorResponses, json)
+
+    def list_cache_settings(self, configuration_id):
+        """List cache settings of the configuration."""
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'cache_settings')
+
+        response = self.session.get(url)
+        json = decode_json(response, 200)
+        return many_of(CacheSettings, json)
+
+    def get_cache_settings(self, configuration_id, cache_id):
+        """Get a cache settings of the configuration."""
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'cache_settings',
+                                     cache_id)
+
+        response = self.session.get(url)
+        json = decode_json(response, 200)
+        return many_of(CacheSettings, json)
+
+    def delete_cache_settings(self, configuration_id, cache_id):
+        """Delete a cache settings of the configuration."""
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'cache_settings',
+                                     cache_id)
+
+        response = self.session.delete(url)
+        return as_boolean(response, 204)
+
+    def create_cache_settings(self, configuration_id,
+                              name, browser_cache_settings='honor',
+                              browser_cache_settings_maximum_ttl=None,
+                              cdn_cache_settings='honor',
+                              cdn_cache_settings_maximum_ttl=None,
+                              cache_by_query_string='ignore',
+                              query_string_fields='None',
+                              enable_query_string_sort=False,
+                              cache_by_cookies='ignore',
+                              cookie_names=None,
+                              adaptive_delivery_action='ignore',
+                              device_group=None,
+                              enable_caching_for_post=False):
+
+        data = {
+            'name': name,
+            'browser_cache_settings': browser_cache_settings,
+            'browser_cache_settings_maximum_ttl': browser_cache_settings_maximum_ttl,
+            'cdn_cache_settings': cdn_cache_settings,
+            'cdn_cache_settings_maximum_ttl': cdn_cache_settings_maximum_ttl,
+            'cache_by_query_string': cache_by_query_string,
+            'query_string_fields': query_string_fields,
+            'enable_query_string_sort': enable_query_string_sort,
+            'cache_by_cookies': cache_by_cookies,
+            'cookie_names': cookie_names,
+            'adaptive_delivery_action': adaptive_delivery_action,
+            'device_group': device_group,
+            'enable_caching_for_post': enable_caching_for_post
+        }
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'cache_settings')
+
+        response = self.session.post(url, json=filter_none(data))
+        json = decode_json(response, 201)
+        return instance_from_data(CacheSettings, json)
+
+    def update_cache_settings(self, configuration_id, cache_id,
+                              name=None,
+                              browser_cache_settings=None,
+                              browser_cache_settings_maximum_ttl=None,
+                              cdn_cache_settings=None,
+                              cdn_cache_settings_maximum_ttl=None,
+                              cache_by_query_string=None,
+                              query_string_fields=None,
+                              enable_query_string_sort=None,
+                              cache_by_cookies=None,
+                              cookie_names=None,
+                              adaptive_delivery_action=None,
+                              device_group=None,
+                              enable_caching_for_post=None):
+
+        data = {
+            'name': name,
+            'browser_cache_settings': browser_cache_settings,
+            'browser_cache_settings_maximum_ttl': browser_cache_settings_maximum_ttl,
+            'cdn_cache_settings': cdn_cache_settings,
+            'cdn_cache_settings_maximum_ttl': cdn_cache_settings_maximum_ttl,
+            'cache_by_query_string': cache_by_query_string,
+            'query_string_fields': query_string_fields,
+            'enable_query_string_sort': enable_query_string_sort,
+            'cache_by_cookies': cache_by_cookies,
+            'cookie_names': cookie_names,
+            'adaptive_delivery_action': adaptive_delivery_action,
+            'device_group': device_group,
+            'enable_caching_for_post': enable_caching_for_post
+        }
+
+        url = self.session.build_url('content_delivery',
+                                     'configurations',
+                                     configuration_id,
+                                     'cache_settings',
+                                     cache_id)
+
+        response = self.session.patch(url, json=filter_none(data))
+        json = decode_json(response, 200)
+        return instance_from_data(CacheSettings, json)
 
 
 class Session(requests.Session):
@@ -123,7 +267,7 @@ class Session(requests.Session):
             'Accept': 'application/json; version=2',
             'Accept-Charset': 'utf-8',
             'Content-Type': 'application/json',
-            'User-Agent': 'azion-sdk-python/{}'.format(version)
+            'User-Agent': 'azion-python-sdk/{}'.format(version)
         })
         self.base_url = 'https://api.azionapi.net'
 

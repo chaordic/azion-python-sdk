@@ -12,6 +12,8 @@ def instance_from_data(model, data):
 def many_of(model, data):
     if not data:
         return []
+    if not isinstance(data, list):
+        return instance_from_data(model, data)
     return [instance_from_data(model, resource) for
             resource in data]
 
@@ -91,7 +93,10 @@ class Configuration(object):
         self.cname = data['cname']
         self.cname_access_only = data['cname_access_only']
         self.rawlogs = data['rawlogs']
-        self.application_aceleration = data['application_aceleration']
+        try:
+            self.application_aceleration = data['application_aceleration']
+        except (NameError, KeyError):
+            self.application_aceleration = None
 
 
 class ErrorResponses(object):
@@ -101,10 +106,10 @@ class ErrorResponses(object):
 
     def __init__(self, data):
         self.load_data(data)
+        self.configuration_id = data['id']
 
     def __repr__(self):
-        return '<ErrorResponses [{} ({})]>'.format(self.name,
-                                                   self.domain_name)
+        return '<ErrorResponses [{}]>'.format(self.configuration_id)
 
     def load_data(self, data):
         self.cache_error_400 = data['cache_error_400']
@@ -114,6 +119,41 @@ class ErrorResponses(object):
         self.cache_error_414 = data['cache_error_414']
         self.cache_error_416 = data['cache_error_416']
         self.cache_error_501 = data['cache_error_501']
+
+
+class CacheSettings(object):
+    """Model representing the cache settings configuration
+    retrieved from the API.
+    """
+
+    def __init__(self, data):
+        self.load_data(data)
+
+    def __repr__(self):
+        return '<CacheSettings [{} ({})]>'.format(self.name,
+                                                  self.id)
+
+    def load_data(self, data):
+        self.name = data['name']
+        self.browser_cache_settings = data['browser_cache_settings']
+        self.browser_cache_settings_maximum_ttl = data['browser_cache_settings_maximum_ttl']
+        self.cdn_cache_settings = data['cdn_cache_settings']
+        self.cdn_cache_settings_maximum_ttl = data['cdn_cache_settings_maximum_ttl']
+        self.cache_by_query_string = data['cache_by_query_string']
+        self.query_string_fields = data['query_string_fields']
+        self.enable_query_string_sort = data['enable_query_string_sort']
+        self.cache_by_cookies = data['cache_by_cookies']
+        self.cookie_names = data['cookie_names']
+        self.adaptive_delivery_action = data['adaptive_delivery_action']
+        self.device_group = data['device_group']
+        try:
+            self.id = data['id']
+        except (NameError, KeyError):
+            self.id = None
+        try:
+            self.enable_caching_for_post = data['enable_caching_for_post']
+        except (NameError, KeyError):
+            self.enable_caching_for_post = None
 
 
 class Address(object):
