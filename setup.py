@@ -7,7 +7,7 @@ from os import path
 from setuptools import find_packages, setup
 
 NAME = 'azion'
-DESCRIPTION = "Azion Python SDK to interact with Azion REST API"
+DESCRIPTION = "A Python SDK to provides a pure interface for the Azion REST API v2"
 URL = 'https://github.com/raphapr/azion-python-sdk'
 EMAIL = 'raphaelpr01@gmail.com'
 AUTHOR = 'Raphael P. Ribeiro'
