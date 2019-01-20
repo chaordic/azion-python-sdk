@@ -12,8 +12,6 @@ def instance_from_data(model, data):
 def many_of(model, data):
     if not data:
         return []
-    if not isinstance(data, list):
-        return instance_from_data(model, data)
     return [instance_from_data(model, resource) for
             resource in data]
 
@@ -97,6 +95,7 @@ class Configuration(object):
             self.application_aceleration = data['application_aceleration']
         except (NameError, KeyError):
             self.application_aceleration = None
+            pass
 
 
 class ErrorResponses(object):
@@ -149,11 +148,11 @@ class CacheSettings(object):
         try:
             self.id = data['id']
         except (NameError, KeyError):
-            self.id = None
+            pass
         try:
             self.enable_caching_for_post = data['enable_caching_for_post']
         except (NameError, KeyError):
-            self.enable_caching_for_post = None
+            pass
 
 
 class Rule(object):
@@ -175,41 +174,3 @@ class Rule(object):
         self.criteria = data['criteria']
         self.behaviors = data['behaviors']
         self.order = data['order']
-
-
-class Address(object):
-    """Model representing an Address - a related resource
-    of `Origin` model.
-    """
-
-    def __init__(self, data):
-        self.load_data(data)
-
-    def load_data(self, data):
-        self.address = data['address']
-        self.weight = data['weight']
-        self.server_role = data['server_role']
-        self.is_active = data['is_active']
-
-
-class Origin(object):
-    """Model representing the Origin retrieved
-    from the API.
-    """
-
-    def __init__(self, data):
-        self.load_data(data)
-
-    def __repr__(self):
-        return '<Origin [{}]>'.format(self.name)
-
-    def load_data(self, data):
-        self.id = data['id']
-        self.name = data['name']
-        self.origin_type = data['origin_type']
-        self.method = data['method']
-        self.host_header = data['host_header']
-        self.origin_protocol_policy = data['origin_protocol_policy']
-        self.addresses = many_of(Address, data['addresses'])
-        self.connection_timeout = data['connection_timeout']
-        self.timeout_between_bytes = data['timeout_between_bytes']

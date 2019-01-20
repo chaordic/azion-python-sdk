@@ -1,5 +1,4 @@
-import requests
-from azion.__version__ import __version__ as version
+from azion.session import Session
 from azion.models import (
     Configuration, ErrorResponses, CacheSettings, Rule, Token,
     as_boolean, decode_json, filter_none, instance_from_data, many_of)
@@ -31,14 +30,14 @@ class Azion():
         json = decode_json(response, 200)
         return many_of(Configuration, json)
 
-    def get_configurations(self, configuration_id):
+    def get_configuration(self, configuration_id):
         """Get configuration."""
         url = self.session.build_url('content_delivery',
                                      'configurations',
                                      configuration_id)
         response = self.session.get(url)
         json = decode_json(response, 200)
-        return many_of(Configuration, json)
+        return instance_from_data(Configuration, json)
 
     def delete_configuration(self, configuration_id):
         """Delete a configuration.
@@ -111,7 +110,7 @@ class Azion():
         response = self.session.get(url)
         json = decode_json(response, 200)
         json.update({'id': configuration_id})
-        return many_of(ErrorResponses, json)
+        return instance_from_data(ErrorResponses, json)
 
     def update_error_responses(self, configuration_id, cache_error_400=None,
                                cache_error_403=None, cache_error_404=None,
@@ -138,7 +137,7 @@ class Azion():
         response = self.session.get(url)
         json = decode_json(response, 200)
         json.update({'id': configuration_id})
-        return many_of(ErrorResponses, json)
+        return instance_from_data(ErrorResponses, json)
 
     def list_cache_settings(self, configuration_id):
         """List cache settings of the configuration."""
@@ -163,7 +162,7 @@ class Azion():
 
         response = self.session.get(url)
         json = decode_json(response, 200)
-        return many_of(CacheSettings, json)
+        return instance_from_data(CacheSettings, json)
 
     def delete_cache_settings(self, configuration_id, cache_id):
         """Delete a cache settings of the configuration."""
@@ -284,7 +283,7 @@ class Azion():
 
         response = self.session.get(url)
         json = decode_json(response, 200)
-        return many_of(Rule, json)
+        return instance_from_data(Rule, json)
 
     def delete_rules_engine(self, configuration_id, phase, rule_id):
         """Delete a rule from rules engine of the configuration."""
@@ -346,30 +345,3 @@ class Azion():
         response = self.session.patch(url, json=filter_none(data))
         json = decode_json(response, 200)
         return instance_from_data(CacheSettings, json)
-
-
-class Session(requests.Session):
-    auth = None
-
-    def __init__(self):
-        super(Session, self).__init__()
-        self.headers.update({
-            'Accept': 'application/json; version=2',
-            'Accept-Charset': 'utf-8',
-            'Content-Type': 'application/json',
-            'User-Agent': 'azion-python-sdk/{}'.format(version)
-        })
-        self.base_url = 'https://api.azionapi.net'
-
-    def token_auth(self, token):
-        self.headers.update({
-            'Authorization': 'token {}'.format(token)
-        })
-
-    def build_url(self, *args, **kwargs):
-        """Build a URL depending on the `base_url`
-        attribute."""
-        params = [kwargs.get('base_url') or self.base_url]
-        params.extend(args)
-        params = map(str, params)
-        return '/'.join(params)
