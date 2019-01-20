@@ -58,9 +58,6 @@ class Token(object):
     """
 
     def __init__(self, data):
-        self.load_data(data)
-
-    def load_data(self, data):
         self.token = data['token']
         self.created_at = to_date(data['created_at'])
         self.expires_at = to_date(data['expires_at'])
@@ -75,13 +72,6 @@ class Configuration(object):
     """
 
     def __init__(self, data):
-        self.load_data(data)
-
-    def __repr__(self):
-        return '<Configuration [{} ({})]>'.format(self.name,
-                                                  self.domain_name)
-
-    def load_data(self, data):
         self.id = data['id']
         self.name = data['name']
         self.domain_name = data['domain_name']
@@ -94,8 +84,11 @@ class Configuration(object):
         try:
             self.application_aceleration = data['application_aceleration']
         except (NameError, KeyError):
-            self.application_aceleration = None
             pass
+
+    def __repr__(self):
+        return '<Configuration [{} ({})]>'.format(self.name,
+                                                  self.domain_name)
 
 
 class ErrorResponses(object):
@@ -104,13 +97,7 @@ class ErrorResponses(object):
     """
 
     def __init__(self, data):
-        self.load_data(data)
         self.configuration_id = data['id']
-
-    def __repr__(self):
-        return '<ErrorResponses [{}]>'.format(self.configuration_id)
-
-    def load_data(self, data):
         self.cache_error_400 = data['cache_error_400']
         self.cache_error_403 = data['cache_error_403']
         self.cache_error_404 = data['cache_error_404']
@@ -119,6 +106,9 @@ class ErrorResponses(object):
         self.cache_error_416 = data['cache_error_416']
         self.cache_error_501 = data['cache_error_501']
 
+    def __repr__(self):
+        return '<ErrorResponses [{}]>'.format(self.configuration_id)
+
 
 class CacheSettings(object):
     """Model representing the cache settings configuration
@@ -126,13 +116,6 @@ class CacheSettings(object):
     """
 
     def __init__(self, data):
-        self.load_data(data)
-
-    def __repr__(self):
-        return '<CacheSettings [{} ({})]>'.format(self.name,
-                                                  self.id)
-
-    def load_data(self, data):
         self.name = data['name']
         self.browser_cache_settings = data['browser_cache_settings']
         self.browser_cache_settings_maximum_ttl = data['browser_cache_settings_maximum_ttl']
@@ -154,6 +137,10 @@ class CacheSettings(object):
         except (NameError, KeyError):
             pass
 
+    def __repr__(self):
+        return '<CacheSettings [{} ({})]>'.format(self.name,
+                                                  self.id)
+
 
 class Rule(object):
     """Model representing the rule from rules engine
@@ -161,16 +148,13 @@ class Rule(object):
     """
 
     def __init__(self, data):
-        self.load_data(data)
-
-    def __repr__(self):
-        return '<Rule [{} ({})]>'.format(self.name,
-                                         self.id)
-
-    def load_data(self, data):
         self.id = data['id']
         self.name = data['name']
         self.phase = data['phase']
         self.criteria = data['criteria']
         self.behaviors = data['behaviors']
         self.order = data['order']
+
+    def __repr__(self):
+        return '<Rule [{} ({})]>'.format(self.name,
+                                         self.id)
