@@ -5,33 +5,64 @@ from azion.models import (
 
 
 class Azion():
+    """Primary interface to work with the Azion API.
+    To start using the client, you need generate a valid token.
+    Therefore, we can use the `auth` and `login` functions:
+    .. code-block:: python
+        from azion.api import Azion
+        azion = Azion()
+        auth = azion.auth(user, password)
+        azion.login(auth.token)
+    Now you are authenticated for use all API resources.
+    """
 
     def __init__(self, token=None, session=None):
+        """Create a new Azion API instance
+
+        :param token: Azion Authorization Token. It can be
+        obtained from :func:`~azion.api.Azion.auth`
+        """
 
         self.session = session or Session()
 
         if token:
             self.login(token)
 
-    def auth(self, username, password):
+    def auth(self, user, password):
+        """Generate a new authorization token for API
+
+        :param user: Azion account email
+        :param password: Azion account password
+        """
         url = self.session.build_url('tokens')
-        response = self.session.post(url, data={}, auth=(username, password))
+        response = self.session.post(url, data={}, auth=(user, password))
         json = decode_json(response, 201)
 
         return instance_from_data(Token, json)
 
     def login(self, token):
+        """Logging user in API
+
+        :param token: Azion Authorization Token. It can be
+        generated from :func:`~azion.api.Azion.auth`
+        """
+
         self.session.token_auth(token)
 
     def list_configurations(self):
-        """List configurations."""
+        """List content delivery configurations """
+
         url = self.session.build_url('content_delivery', 'configurations')
         response = self.session.get(url)
         json = decode_json(response, 200)
         return many_of(Configuration, json)
 
     def get_configuration(self, configuration_id):
-        """Get configuration."""
+        """Get a content delivery configuration
+
+        :param int configuration_id: Configuration ID.
+        """
+
         url = self.session.build_url('content_delivery',
                                      'configurations',
                                      configuration_id)
@@ -40,10 +71,11 @@ class Azion():
         return instance_from_data(Configuration, json)
 
     def delete_configuration(self, configuration_id):
-        """Delete a configuration.
-        :param int configuration_id:
-            Configuration ID.
+        """Delete a content delivery configuration
+
+        :param int configuration_id: Configuration ID.
         """
+
         url = self.session.build_url(
             'content_delivery', 'configurations', configuration_id)
         response = self.session.delete(url)
@@ -58,6 +90,28 @@ class Azion():
                              browser_cache_settings_maximum_ttl=0,
                              cdn_cache_settings='honor',
                              cdn_cache_settings_maximum_ttl=0):
+        """Create a content delivery configuration
+
+        :param str name: configuration name
+        :param str origin_address: origin address
+        :param str origin_host_header: host header that will be sent for origin
+        :param list cname: the domain list of site. Default is empty.
+        :param bool cname_access_only: defines if content delivery will only
+            use cname domains or not. Default is `false`.
+        :param str delivery_protocol: defines content delivery protocol.
+            Default is `http`.
+        :param int digital_certificate: SSL certificate ID. Default is `null`.
+        :param str origin_protocol_policy: Defines to force protocol to origin.
+            Default is `preserve`
+        :param bool browser_cache_settings: Defines browser user cache settings.
+            Default is `honor`.
+        :param int browser_cache_settings_maximum_ttl: Defines TTL
+            (time-to-live) in seconds for objects into browser cache.
+        :param str cdn_cache_settings: Defines CDN cache settings.
+            Default is `honor`.
+        :param int cdn_cache_settings_maximum_ttl: Defines TTL (time-to-live)
+            in seconds for objects into CDN cache. Default is `null`
+        """
 
         data = {
             'name': name, 'origin_address': origin_address,
