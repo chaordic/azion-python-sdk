@@ -14,3 +14,18 @@ Documentation
 -------------
 
 WIP
+
+Contributing
+-------------
+
+WIP
+
+License
+-------------
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+Acknowledgments
+-------------
+
+* This library is based on [mauricioabreu/azion-python](https://github.com/mauricioabreu/azion-python).

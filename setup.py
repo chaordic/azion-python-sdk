@@ -6,9 +6,9 @@ from os import path
 
 from setuptools import find_packages, setup
 
-NAME = 'azion'
+NAME = 'azion-sdk'
 DESCRIPTION = "A Python SDK to provides a pure interface for the Azion REST API v2"
-URL = 'https://github.com/raphapr/azion-python-sdk'
+URL = 'https://github.com/chaordic/azion-python-sdk'
 EMAIL = 'raphaelpr01@gmail.com'
 AUTHOR = 'Raphael P. Ribeiro'
 REQUIRES_PYTHON = '>=2.7.0'
@@ -30,5 +30,5 @@ setup(
     url=URL,
     install_requires=REQUIRED,
     include_package_data=True,
-    license='MIT',
+    license='GPL3',
 )
