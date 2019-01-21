@@ -1,1 +1,3 @@
 *.pyc
+azion_sdk.egg-info
+dist
