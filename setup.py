@@ -12,7 +12,7 @@ URL = 'https://github.com/chaordic/azion-python-sdk'
 EMAIL = 'raphaelpr01@gmail.com'
 AUTHOR = 'Raphael P. Ribeiro'
 REQUIRES_PYTHON = '>=2.7.0'
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 REQUIRED = [
     'pendulum',
     'requests'
