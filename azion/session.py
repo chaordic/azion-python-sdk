@@ -1,5 +1,5 @@
 import requests
-from azion.__version__ import __version__ as version
+from azion.__consts__ import (USER_AGENT, API_PUBLIC_ENDPOINT)
 
 
 class Session(requests.Session):
@@ -11,9 +11,9 @@ class Session(requests.Session):
             'Accept': 'application/json; version=2',
             'Accept-Charset': 'utf-8',
             'Content-Type': 'application/json',
-            'User-Agent': 'azion-python-sdk/{}'.format(version)
+            'User-Agent': '{}'.format(USER_AGENT)
         })
-        self.base_url = 'https://api.azionapi.net'
+        self.base_url = API_PUBLIC_ENDPOINT
 
     def token_auth(self, token):
         self.headers.update({

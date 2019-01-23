@@ -84,6 +84,7 @@ class Configuration(object):
         try:
             self.application_aceleration = data['application_aceleration']
         except (NameError, KeyError):
+            self.application_aceleration = None
             pass
 
     def __repr__(self):
