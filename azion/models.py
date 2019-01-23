@@ -159,3 +159,13 @@ class Rule(object):
     def __repr__(self):
         return '<Rule [{} ({})]>'.format(self.name,
                                          self.id)
+
+
+class Service(object):
+
+    def __init__(self, client, name):
+        self.client = client
+        self.name = name
+
+    def __repr__(self):
+        return '<Service [{}]>'.format(self.name)

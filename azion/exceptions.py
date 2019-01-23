@@ -141,3 +141,7 @@ def handle_error(response):
     """
     handler = error_handlers.get(response.status_code)
     return handler(response)
+
+
+class UnknownServiceError():
+    pass
